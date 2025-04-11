@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-scale-dark text-white;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-scale-lighter;
+  }
+
+  .nav-link.active {
+    @apply bg-scale-lighter text-scale-teal shadow-neon-teal;
+  }
+
+  .stat-card {
+    @apply bg-scale-light p-6 rounded-2xl shadow-lg hover:shadow-neon-teal transition-shadow duration-300;
+  }
+
+  .alert-card {
+    @apply flex items-center gap-3 p-4 rounded-xl bg-scale-light border-l-4;
+  }
+
+  .alert-card.urgent {
+    @apply border-scale-red shadow-neon-red;
+  }
+
+  .alert-card.warning {
+    @apply border-yellow-500;
+  }
+
+  .team-card {
+    @apply bg-scale-light p-6 rounded-2xl shadow-lg hover:shadow-neon-purple transition-all duration-300 cursor-pointer;
+  }
+
+  .glow-button {
+    @apply px-6 py-3 rounded-xl bg-scale-teal text-scale-dark font-semibold 
+           hover:shadow-neon-teal transition-all duration-300 transform hover:scale-105;
+  }
+}
