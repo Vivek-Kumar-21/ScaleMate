@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import TeamPage from './components/TeamPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -32,10 +35,16 @@ function App() {
     });
   }, []);
 
-  return isAuthenticated ? (
-    <Dashboard username={username} onLogout={handleLogout} />
-  ) : (
-    <Login onLogin={handleLogin} />
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
+  return (
+      <Routes>
+        <Route path="/" element={<Dashboard username={username} onLogout={handleLogout} />} />
+        <Route path="/teams" element={<TeamPage username={username} onLogout={handleLogout} />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
   );
 }
 

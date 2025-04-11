@@ -10,6 +10,7 @@ from routes.home import home_bp
 from routes.login import login_bp
 from routes.project import projects_bp
 from routes.team import teams_bp
+from routes.projects import project_bp
 
 # end blueprints
 login_manager=LoginManager()
@@ -35,6 +36,7 @@ def create_app():
     app.register_blueprint(login_bp)
     app.register_blueprint(projects_bp)
     app.register_blueprint(teams_bp)
+    app.register_blueprint(project_bp)
 
     with app.app_context():
         db.create_all()

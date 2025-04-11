@@ -1,4 +1,5 @@
 import { useState } from "react";
+import './Login.css';
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
@@ -32,19 +33,16 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-6 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+    <div className="login-container">
+      <form onSubmit={handleLogin} className="login-form">
+        <h2 className="login-title">Welcome to ScaleMate</h2>
 
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
-          className="w-full px-4 py-2 mb-3 border rounded"
+          className="login-input"
           required
         />
 
@@ -53,18 +51,19 @@ const Login = ({ onLogin }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full px-4 py-2 mb-3 border rounded"
+          className="login-input"
           required
         />
 
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        {error && <p className="login-error">{error}</p>}
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-        >
+        <button type="submit" className="login-button">
           Login
         </button>
+
+        <p className="login-footer">
+          By logging in, you agree to our <span>Terms</span> and <span>Privacy Policy</span>
+        </p>
       </form>
     </div>
   );
