@@ -1,36 +1,41 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
-import Teams from './pages/Teams';
-import Projects from './pages/Projects';
-import Hiring from './pages/Hiring';
-import Login from './pages/Login';
+import { useState, useEffect } from 'react';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
 
-  if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />;
-  }
+  const handleLogin = (user) => {
+    setIsAuthenticated(true);
+    setUsername(user);
+  };
 
-  return (
-    <Router>
-      <div className="flex min-h-screen bg-scale-darker">
-        <Sidebar />
-        <main className="flex-1 p-8 overflow-y-auto">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/teams" element={<Teams />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/hiring" element={<Hiring />} />
-            </Routes>
-          </AnimatePresence>
-        </main>
-      </div>
-    </Router>
+  const handleLogout = async () => {
+    await fetch('http://localhost:5000/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
+    setIsAuthenticated(false);
+    setUsername('');
+  };
+
+  useEffect(() => {
+    fetch('http://localhost:5000/protected', {
+      credentials: 'include',
+    }).then(async (res) => {
+      if (res.ok) {
+        const data = await res.json();
+        setIsAuthenticated(true);
+        setUsername(data.message.split(', ')[1].replace('!', ''));
+      }
+    });
+  }, []);
+
+  return isAuthenticated ? (
+    <Dashboard username={username} onLogout={handleLogout} />
+  ) : (
+    <Login onLogin={handleLogin} />
   );
 }
 
