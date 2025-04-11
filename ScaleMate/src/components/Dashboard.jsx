@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
+import './Dashboard.css';
 
 const Dashboard = ({ username, onLogout }) => {
   const [home, setHome] = useState('');
   const [projects, setProjects] = useState([]);
   const [teams, setTeams] = useState([]);
+
+  const [showProjectForm, setShowProjectForm] = useState(false);
+  const [showTeamForm, setShowTeamForm] = useState(false);
+
+  const [newProject, setNewProject] = useState({ name: '', description: '' });
+  const [newTeam, setNewTeam] = useState({ name: '', focus: '', size: '' });
 
   useEffect(() => {
     fetch('http://localhost:5000/home')
@@ -19,27 +26,101 @@ const Dashboard = ({ username, onLogout }) => {
       .then(data => setTeams(data.teams));
   }, []);
 
+  const handleProjectSubmit = (e) => {
+    e.preventDefault();
+    if (newProject.name && newProject.description) {
+      setProjects([...projects, { id: Date.now(), ...newProject }]);
+      setNewProject({ name: '', description: '' });
+      setShowProjectForm(false);
+    }
+  };
+
+  const handleTeamSubmit = (e) => {
+    e.preventDefault();
+    if (newTeam.name && newTeam.focus && newTeam.size) {
+      setTeams([...teams, { id: Date.now(), ...newTeam }]);
+      setNewTeam({ name: '', focus: '', size: '' });
+      setShowTeamForm(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-scale-darker text-white p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">{home} - {username}</h1>
-        <button onClick={onLogout} className="bg-scale-red px-4 py-2 rounded-xl">Logout</button>
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1>{home} - {username}</h1>
+        <button onClick={onLogout}>Logout</button>
       </div>
 
-      <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Projects</h2>
-        <ul className="space-y-2">
+      <div className="form-buttons">
+        <button className="add-btn" onClick={() => setShowProjectForm(!showProjectForm)}>
+          {showProjectForm ? 'Cancel Project' : 'Add Project'}
+        </button>
+        <button className="add-btn" onClick={() => setShowTeamForm(!showTeamForm)}>
+          {showTeamForm ? 'Cancel Team' : 'Add Team'}
+        </button>
+      </div>
+
+      {showProjectForm && (
+        <form onSubmit={handleProjectSubmit} className="entry-form">
+          <input
+            type="text"
+            placeholder="Project Name"
+            value={newProject.name}
+            onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={newProject.description}
+            onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+            required
+          />
+          <button type="submit">Add Project</button>
+        </form>
+      )}
+
+      {showTeamForm && (
+        <form onSubmit={handleTeamSubmit} className="entry-form">
+          <input
+            type="text"
+            placeholder="Team Name"
+            value={newTeam.name}
+            onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Focus Area"
+            value={newTeam.focus}
+            onChange={(e) => setNewTeam({ ...newTeam, focus: e.target.value })}
+            required
+          />
+          <input
+            type="number"
+            placeholder="Number of Members"
+            value={newTeam.size}
+            onChange={(e) => setNewTeam({ ...newTeam, size: e.target.value })}
+            required
+          />
+          <button type="submit">Add Team</button>
+        </form>
+      )}
+
+      <section>
+        <h2>Projects</h2>
+        <ul className="card-grid">
           {projects.map(p => (
-            <li key={p.id} className="bg-scale-light p-4 rounded-xl shadow">{p.name}: {p.description}</li>
+            <li key={p.id} className="card">{p.name}: {p.description}</li>
           ))}
         </ul>
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold mb-2">Teams</h2>
-        <ul className="space-y-2">
+        <h2>Teams</h2>
+        <ul className="card-grid">
           {teams.map(t => (
-            <li key={t.id} className="bg-scale-light p-4 rounded-xl shadow">
+            <li key={t.id} className="card">
               {t.name} - {t.focus} ({t.size} members)
             </li>
           ))}
