@@ -1,2 +1,2 @@
 # ScaleMate
-A friendly companion for scaling s
+A friendly companion for scaling startups
